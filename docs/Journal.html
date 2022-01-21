@@ -1,452 +1,623 @@
 <!DOCTYPE html>
-
 <html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="generator" content="pandoc" />
 
-<head>
+        <meta name="author" content="Ahmed Yassine" />
+    
+    
+    <title>DBT Reference Guide</title>
 
-<meta charset="utf-8" />
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<meta name="generator" content="pandoc" />
+        <script src="site_libs/header-attrs-2.11/header-attrs.js"></script>
+        <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link href="site_libs/bootstrap-3.3.7/css/bootstrap.min.css" rel="stylesheet" />
+        <script src="site_libs/bootstrap-3.3.7/js/bootstrap.min.js"></script>
+        <script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+        <script src="site_libs/navigation-1.1/tabsets.js"></script>
+        <link href="site_libs/magnific-popup-1.1.0/magnific-popup.css" rel="stylesheet" />
+        <script src="site_libs/magnific-popup-1.1.0/jquery.magnific-popup.min.js"></script>
+        <link href="site_libs/downcute-0.1/downcute.css" rel="stylesheet" />
+        <link href="site_libs/downcute-0.1/downcute_fonts_embed.css" rel="stylesheet" />
+        <script src="site_libs/downcute-0.1/downcute_styles.js"></script>
+        <script src="site_libs/downcute-0.1/downcute.js"></script>
+        <script src="site_libs/prism-1.22/prism.js"></script>
+    
+    
+    
+    
+    <!-- tabsets -->
+    <script>
+      $(document).ready(function () {
+	  window.buildTabsets("toc");
+      });
+      $(document).ready(function () {
+	  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+	      $(this).parent().toggleClass('nav-tabs-open')
+	  });
+      });
+    </script>
 
+    <!-- code folding -->
+    
+    <!-- code download -->
+    
+    <!-- tabsets dropdown -->
 
+    <style type="text/css">
+      .tabset-dropdown > .nav-tabs {
+	  display: inline-table;
+	  max-height: 500px;
+	  min-height: 44px;
+	  overflow-y: auto;
+	  background: white;
+	  border: 1px solid #ddd;
+	  border-radius: 4px;
+      }
+      
+      .tabset-dropdown > .nav-tabs > li.active:before {
+	  content: "";
+	  font-family: 'Glyphicons Halflings';
+	  display: inline-block;
+	  padding: 10px;
+	  border-right: 1px solid #ddd;
+      }
+      
+      .tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+	  content: "&#xe258;";
+	  border: none;
+      }
+      
+      .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+	  content: "";
+	  font-family: 'Glyphicons Halflings';
+	  display: inline-block;
+	  padding: 10px;
+	  border-right: 1px solid #ddd;
+      }
+      
+      .tabset-dropdown > .nav-tabs > li.active {
+	  display: block;
+      }
 
+      .tabset-dropdown > .nav-tabs > li.active a {
+  	  padding: 0 15px !important;
+      }
 
-<title>Journal</title>
-
-<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<link href="site_libs/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
-<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
-<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
-<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
-<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
-<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
-<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
-<script src="site_libs/navigation-1.1/tabsets.js"></script>
-<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
-<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
-
-<style type="text/css">code{white-space: pre;}</style>
-<style type="text/css">
-  pre:not([class]) {
-    background-color: white;
-  }
-</style>
-<script type="text/javascript">
-if (window.hljs) {
-  hljs.configure({languages: []});
-  hljs.initHighlightingOnLoad();
-  if (document.readyState && document.readyState === "complete") {
-    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
-  }
-}
-</script>
-
-
-
-<style type="text/css">
-h1 {
-  font-size: 34px;
-}
-h1.title {
-  font-size: 38px;
-}
-h2 {
-  font-size: 30px;
-}
-h3 {
-  font-size: 24px;
-}
-h4 {
-  font-size: 18px;
-}
-h5 {
-  font-size: 16px;
-}
-h6 {
-  font-size: 12px;
-}
-.table th:not([align]) {
-  text-align: left;
-}
-</style>
-
-
+      .tabset-dropdown > .nav-tabs > li > a,
+      .tabset-dropdown > .nav-tabs > li > a:focus,
+      .tabset-dropdown > .nav-tabs > li > a:hover {
+	  border: none;
+	  display: inline-block;
+	  border-radius: 4px;
+	  background-color: transparent;
+      }
+      
+      .tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+	  display: block;
+	  float: none;
+      }
+      
+      .tabset-dropdown > .nav-tabs > li {
+	  display: none;
+	  margin-left: 0 !important;
+      }
+    </style>
+    
 </head>
 
-<body>
+<body class="preload">
 
-<style type = "text/css">
-.main-container {
-  max-width: 940px;
-  margin-left: auto;
-  margin-right: auto;
-}
-code {
-  color: inherit;
-  background-color: rgba(0, 0, 0, 0.04);
-}
-img {
-  max-width:100%;
-  height: auto;
-}
-.tabbed-pane {
-  padding-top: 12px;
-}
-.html-widget {
-  margin-bottom: 20px;
-}
-button.code-folding-btn:focus {
-  outline: none;
-}
-</style>
-
-
-<style type="text/css">
-/* padding for bootstrap navbar */
-body {
-  padding-top: 51px;
-  padding-bottom: 40px;
-}
-/* offset scroll position for anchor links (for fixed navbar)  */
-.section h1 {
-  padding-top: 56px;
-  margin-top: -56px;
-}
-
-.section h2 {
-  padding-top: 56px;
-  margin-top: -56px;
-}
-.section h3 {
-  padding-top: 56px;
-  margin-top: -56px;
-}
-.section h4 {
-  padding-top: 56px;
-  margin-top: -56px;
-}
-.section h5 {
-  padding-top: 56px;
-  margin-top: -56px;
-}
-.section h6 {
-  padding-top: 56px;
-  margin-top: -56px;
-}
-</style>
-
-<script>
-// manage active state of menu based on current page
-$(document).ready(function () {
-  // active menu anchor
-  href = window.location.pathname
-  href = href.substr(href.lastIndexOf('/') + 1)
-  if (href === "")
-    href = "index.html";
-  var menuAnchor = $('a[href="' + href + '"]');
-
-  // mark it active
-  menuAnchor.parent().addClass('active');
-
-  // if it's got a parent navbar menu mark it active as well
-  menuAnchor.closest('li.dropdown').addClass('active');
-});
-</script>
-
-
-<div class="container-fluid main-container">
-
-<!-- tabsets -->
-<script>
-$(document).ready(function () {
-  window.buildTabsets("TOC");
-});
-</script>
-
-<!-- code folding -->
-
-
-
-
-<script>
-$(document).ready(function ()  {
-
-    // move toc-ignore selectors from section div to header
-    $('div.section.toc-ignore')
-        .removeClass('toc-ignore')
-        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
-
-    // establish options
-    var options = {
-      selectors: "h1",
-      theme: "bootstrap3",
-      context: '.toc-content',
-      hashGenerator: function (text) {
-        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
-      },
-      ignoreSelector: ".toc-ignore",
-      scrollTo: 0
-    };
-    options.showAndHide = true;
-    options.smoothScroll = true;
-
-    // tocify
-    var toc = $("#TOC").tocify(options).data("toc-tocify");
-});
-</script>
-
-<style type="text/css">
-
-#TOC {
-  margin: 25px 0px 20px 0px;
-}
-@media (max-width: 768px) {
-#TOC {
-  position: relative;
-  width: 100%;
-}
-}
-
-
-.toc-content {
-  padding-left: 30px;
-  padding-right: 40px;
-}
-
-div.main-container {
-  max-width: 1200px;
-}
-
-div.tocify {
-  width: 20%;
-  max-width: 260px;
-  max-height: 85%;
-}
-
-@media (min-width: 768px) and (max-width: 991px) {
-  div.tocify {
-    width: 25%;
-  }
-}
-
-@media (max-width: 767px) {
-  div.tocify {
-    width: 100%;
-    max-width: none;
-  }
-}
-
-.tocify ul, .tocify li {
-  line-height: 20px;
-}
-
-.tocify-subheader .tocify-item {
-  font-size: 0.90em;
-  padding-left: 25px;
-  text-indent: 0;
-}
-
-.tocify .list-group-item {
-  border-radius: 0px;
-}
-
-
-</style>
-
-<!-- setup 3col/9col grid for toc_float and main content  -->
-<div class="row-fluid">
-<div class="col-xs-12 col-sm-4 col-md-3">
-<div id="TOC" class="tocify">
-</div>
-</div>
-
-<div class="toc-content col-xs-12 col-sm-8 col-md-9">
-
-
-
-
-<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
-  <div class="container">
-    <div class="navbar-header">
-      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-      </button>
-      <a class="navbar-brand" href="index.html">MyLabJournal</a>
-    </div>
-    <div id="navbar" class="navbar-collapse collapse">
-      <ul class="nav navbar-nav">
-        <li>
-  <a href="index.html">Home</a>
-</li>
-<li>
-  <a href="Journal.html">Journal</a>
-</li>
-<li>
-  <a href="Links.html">Links</a>
-</li>
-      </ul>
-      <ul class="nav navbar-nav navbar-right">
+   	
+               <!-- downcute start -->   
+   <div id="docute" class="Root theme-default">
+     <div class="Page layout-narrow">
+      <div class="Wrap">
+        <div class="Sidebar">
+          <div class="SidebarItems" id="toc">
+            <ul>
+            <li><a href="#overview">Overview</a>
+            <ul>
+            <li><a href="#staging">Staging</a></li>
+            <li><a href="#base">Base</a></li>
+            <li><a href="#marts">Marts</a></li>
+            </ul></li>
+            <li><a href="#model-configuration">Model configuration</a>
+            <ul>
+            <li><a href="#dbt-conventions">dbt conventions</a></li>
+            <li><a href="#testing">Testing</a></li>
+            </ul></li>
+            <li><a href="#naming-and-field-conventions">Naming and field conventions</a>
+            <ul>
+            <li><a href="#ctes">CTEs</a></li>
+            <li><a href="#sql-style-guide">SQL style guide</a></li>
+            <li><a href="#yaml-style-guide">YAML style guide</a></li>
+            <li><a href="#jinja-style-guide">Jinja style guide</a></li>
+            </ul></li>
+            <li><a href="#operators">Operators</a></li>
+            </ul>
+          </div>
+          <div data-position="sidebar:post-end" class="InjectedComponents"><div class="dark-theme-toggler"><div class="toggle "><div class="toggle-track"><div class="toggle-track-check"><img  src="data:image/png;base64,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" role="presentation" style="pointer-events: none;" width="16" height="16"></div> <div class="toggle-track-x"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAAAlwSFlzAAALEwAACxMBAJqcGAAAAVlpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IlhNUCBDb3JlIDUuNC4wIj4KICAgPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4KICAgICAgPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIKICAgICAgICAgICAgeG1sbnM6dGlmZj0iaHR0cDovL25zLmFkb2JlLmNvbS90aWZmLzEuMC8iPgogICAgICAgICA8dGlmZjpPcmllbnRhdGlvbj4xPC90aWZmOk9yaWVudGF0aW9uPgogICAgICA8L3JkZjpEZXNjcmlwdGlvbj4KICAgPC9yZGY6UkRGPgo8L3g6eG1wbWV0YT4KTMInWQAABwNJREFUWAmtV1tsFFUY/s6Z2d22zLYlZakUCRVaQcqlWIiCiS1gTEB9UAO+GR9En3iQGI0xJiSiRB98MjEq8cEQTSBeHhQM0V7whtEGDWC90BYitxahtNtu25058/v/ZzvLbilawJNM5+yZ89+//1LgJhYRNLW1uDfBAvpGiIk2O5auvfFxqIH3ZJ8/u06GN6Z9+wVl5SjcD1IbZa/UPkPyYl2uR4dreoD2bnbYxTlBBRytkHXtAREphP5KuH4lddx9h70yxX05t7yYXwGb6W8nx1jibpl2rFlGBxcG9M18okOrn7Bnk/BAO/4bI0UeEE1zjBp3UmvjOxJXJdaKN/ZiIu4tOZrAb4aTdZAZArKmWeiiJZ6jt5tiagdCS9+6cgO1Ne6Mvhe+ixTIfyDVhipnK9p+P0Edqx9RW/YZtQVGmOLChRxNNlyPsTEgPQKMB3dbEHa0h1awYmQ83enTd2vmUtvKd1Glv2RkzBb+kZGRrKtjzG60Wguhd/lJZBingbcfWWe72vjT75bJDrhYtvA0hrurETDr5HyF2Knb1MM4ab//xIoOqueA0edRnkkinTyJdYvqLFDZO4zUPFCvVoDjJq4T7TE61IWh4x5KqxX5KVKkX8WZ/t2ov2cb3MHt4dhIyOxIJxJOOF6xRx/99BksXLoecWcXytILMNBDqKpnGZWPquYfPxY8iXGR9fK+SgFrgcRPXPjVqhehL+3EmZ5RGJQi1QBU8TPThQnOQzm+5UXGIcetUeEAfP13VwzpI+w1jGJWdSliNfvVhiMPiOsllJag4M/UGHiqM6dlBb2OTLKHHV6KkvogrJ4XhBWniWK/Gp1MQyf93FOeUXKmKk/FzJxbQtKLjFXYT4USupy8fQVir2ynVEBiZMG0qtOHMS/AW4Gwrk7BG3C1F0B5nqNKE0CME4MfVRLPnXkBKe+ipvoFhNQywOhdghvLi0F8ReyVXV4BKTBRbbe5f64zR/DHsdZw1hJfeWlHl/GNRJzDxrd5m192z78TMaVnKELZoINZS4BzQ7vtnZljSnha/pPCbkuxzXcupYwI5tIeCpGc0Yp9tWHZQy/rmYhRfNgg4bHJBYLzGkxsRJF4XKlE2jBOHNSv3kY7Tj6vthzPFl61BrYwqFlmEQhtSVXmLiksxLmtRgYXI1ULU61JJ4eVKmG3/5sCVgpbMT6OMJ2E08/29Xf3w6v4FnHdCjfWgXu/O8Z5mLdCkeRs2khHe1DqOtQwbHWTAnM5S2HNmhALYo5KjkPFrMMKjZl6HxhWIAb0BqE+/73GrBRQUsKYiBu4JX8ycI6wtw+i5ef3NZpsrKVSHYCP37jwGDgeE1SA0S/xtl5SU2fs1ApEp0qTLVRjgyycDSsLHMSwmFltZMStR3uLLg6BdLhDa5dC6ryU2pHBe1BVO9tUcwfitJt2CLJZUHoG6T7Op75u0IyK31TCPcwFqgPk/KCaD3dFOuZBCO7xvCT/j048b3I3c7F2+WuOW7qdgkucFYlcQ4qop3yzTX7WaKfOCccye3Ts1Etq0+a/BHCF1yPgF3tAUkR6OrtGmo6gl94qqcXKh3rDyrOkPa58URoWcov2Mo6M+0QjrqKB+b7++oMa9Sz+ZkM0mie6aAtnGUvhmxaI+TogPOSQedgWioGSHFLn3v4kLh4HRspNmOGv41k+55siLFp2z6xYeJjhljFcbmxJlr4ga06TbevSByz/glQq4BJx46/c+237PbBqEYKxX3HpmKZEnQnr65X20hqJYaNcLoFOLiJk2LuBbyg7Q0OEn+hm0P3honxFD6rdxYorKpeIoi4YSSvyQHQIbM5t4+YNxLj/OxhVOOE4585qGpjnq+wSx6Q9CtNxTjd5klB+g6Mv36r0+b9cZFi44WYkHdG2ZWb3TtOUOXyVAlKlpGvJIAJ3eBMyfYS5C0qRZGtC85j+4sOasDe9xznPYezhhO/2Q6eP2fSOvYHOjtuQ1a9Q1VKynVDaMc8E0tptdxUsTFpFIYjcZKcbnoaQTNdiqCwNlL4G7oziSqGnT1ALf34vhk4R5zU3qYV9ONp9K88RtouShE68JwaU8dFw5W617shWa9ykeaBIn2hcsvPgL00k45QdTCZuSVcTRNs+8fnyLvooQfR5iujAnR9bxfY2xOVOxFS8SK3Le0l48VyYu1M8HRe5JD8wKPTjYnifaK3Wfn/GChYQ8ZAi6WRzWgqLV5YrsVLnZaVSoXU1g9gOIDwFySiGi+Zdrnzr7J3r+SMuszlcQCRn8lNGcTuSy2jOI7o9mxjZo+vR3ej3tN+ifRSOyUTS0+VMOid93cCubeiy/6TImS0QxRSCq2vxKr45zV+FQnjWH6D2xg+E9EatLcLAdHTgtGGD80D6jM0+aOl4wJgO/f96R2aJKCQ3yvgftRhdFMOpd6oAAAAASUVORK5CYII=" role="presentation" style="pointer-events: none;" width="16" height="16"></div></div> <div class="toggle-thumb"></div></div> <input type="checkbox" aria-label="Switch between Dark and Default theme" class="toggler-screen-reader-only"></div></div>
+        </div>
+        <div class="Main">
+          <div class="Content" id="content"> 
+   
+   
+      
+      <div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+        <div class="container">
+          <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="index.html">DBT Reference</a>
+          </div>
+          <div id="navbar" class="navbar-collapse collapse">
+            <ul class="nav navbar-nav">
+              <li>
+        <a href="Journal.html">WIKI</a>
+      </li>
+      <li>
+        <a href="Links.html">Rescources</a>
+      </li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+              
+            </ul>
+          </div><!--/.nav-collapse -->
+        </div><!--/.container -->
+      </div><!--/.navbar -->
         
-      </ul>
-    </div><!--/.nav-collapse -->
-  </div><!--/.container -->
-</div><!--/.navbar -->
+      <h1 class="title">DBT Reference Guide</h1>
+      
+      <p class="authors">
+           <span class="glyphicon glyphicon-user"></span> Ahmed Yassine
+      </p>
+         <p class="date"><span class="glyphicon glyphicon-calendar"></span> Last compiled on 20 January, 2022</p>
+           
 
-<div class="fluid-row" id="header">
+   
+      
+   
+<!-- Don't indent these lines or it will mess pre blocks indentation --> 
+<div class="page-content has-page-title">
+<div id="overview" class="section level1">
+<h1>Overview</h1>
+<p>Our models (typically) fit into three main categories: staging, marts, base/intermediate. For more detail about why we use this structure, check out <a href="https://discourse.getdbt.com/t/how-we-structure-our-dbt-projects/355">this discourse post</a>. The file and naming structures are as follows:</p>
+<ol style="list-style-type: decimal">
+<li><p><strong>Sources</strong>: Schemas and tables in a source-conformed structure (i.e. tables and columns in a structure based on what an API returns), loaded by a third party tool.</p></li>
+<li><p><strong>Staging models</strong>: The atomic unit of data modeling. Each model bears a one-to-one relationship with the source data table it represents. It has the same granularity, but the columns have been renamed, recast, or usefully reconsidered into a consistent format.</p></li>
+<li><p><strong>Marts models</strong>: Models that represent business processes and entities, abstracted from the data sources that they are based on.</p></li>
+</ol>
+<!-- -->
+<pre><code>├── dbt_project.yml
+└── models
+    ├── marts
+    |   └── core
+    |       ├── intermediate
+    |       |   ├── intermediate.yml
+    |       |   ├── customer__unioned.sql
+    |       |   ├── customer__grouped.sql
+    |       └── core.yml
+    |       └── core.docs
+    |       └── dim_customer.sql
+    |       └── fct_event.sql
+    └── staging
+        └── fivetran_prd
+            ├── base
+            |   ├── base__fivetran_prd_event.sql
+            ├── src_fivetran_prd.yml
+            ├── src_fivetran_prd.docs
+            ├── stg_fivetran_prd.yml
+            ├── stg_fivetran_prd__customer.sql
+            └── stg_fivetran_prd__event.sql</code></pre>
+<ul>
+<li>All objects should be plural, such as: <code>stg_fivetran_prd__event</code></li>
+<li>Base tables are prefixed with <code>base__</code>, such as: <code>base__&lt;source&gt;_&lt;object&gt;</code></li>
+<li>Intermediate tables should end with a past tense verb indicating the action performed on the object, such as: <code>customer__unioned</code></li>
+<li>Marts are categorized between fact (immutable, verbs) and dimensions (mutable, nouns) with a prefix that indicates either, such as: <code>fct_event</code> or <code>dim_customer</code></li>
+</ul>
+<div id="staging" class="section level2">
+<h2>Staging</h2>
+<ul>
+<li><p>Fields have been renamed and recast in a consistent way.</p></li>
+<li><p>Datatypes, such as timezones, are consistent.</p></li>
+<li><p>Light cleansing, such as replacing empty string with NULL values, has occurred.</p></li>
+<li><p>If useful, flattening of objects might have occurred.</p></li>
+<li><p>There is a primary key that is both unique and not null (and tested).</p></li>
+</ul>
+<p>Staging models can have joins in them to field additional columns for context or enrichment; add rows through unions and remove them through filters; deduplicate a natural key or hash together a <a href="https://github.com/fishtown-analytics/dbt-utils#surrogate_key-source">surrogate one 254</a>.</p>
+<p>Because we often work with multiple data sources, in our <code>staging</code> directory, we create one directory per source.</p>
+<pre><code>├── dbt_project.yml
+└── models
+    ├── marts
+    └── staging
+        ├── fivetran_prd
+        └── hubspot_production</code></pre>
+<p>Each staging directory contains at a minimum:</p>
+<ul>
+<li><p>One staging model for each object that is useful for analytics:</p>
+<ul>
+<li><p>Named <code>stg_&lt;source&gt;__&lt;object&gt;</code>.</p></li>
+<li><p>Generally materialized as a view (unless performance requires it as a table).</p></li>
+</ul></li>
+<li><p>A <code>src_&lt;source&gt;.yml</code> file which contains:</p>
+<ul>
+<li><a href="https://docs.getdbt.com/docs/using-sources">Source 840</a> definitions, tests, and documentation</li>
+</ul></li>
+<li><p>A <code>stg_&lt;source&gt;.yml</code> file which contains</p>
+<ul>
+<li><a href="https://docs.getdbt.com/docs/testing-and-documentation">Tests and documentation 405</a> for models in the same directory</li>
+</ul></li>
+</ul>
+<!-- -->
+<pre><code>├── dbt_project.yml
+└── models
+    ├── marts
+    └── staging
+        └── fivetran_prd
+            ├── src_fivetran_prd.yml
+            ├── stg_fivetran_prd.yml
+            ├── stg_fivetran_prd__customer.sql
+            └── stg_fivetran_prd__event.sql
+            
+    </code></pre>
+</div>
+<div id="base" class="section level2">
+<h2>Base</h2>
+<p>Earlier versions of the dbt documentation recommended implementing “base models” as the first layer of transformation – and we used to organize and name our models in this way, for example <code>models/fivetran_prd/base/base_event.sql</code>.</p>
+<p>We realized that while the reasons behind this convention were valid, the naming was an opinion, so in our recent update to the <a href="https://docs.getdbt.com/docs/best-practices">best practices 2.3k</a>, we took the mention of base models out. Instead, we replaced it with the principles of “renaming and recasting once” and “limiting the dependencies on raw data”.</p>
+<p>That being said, in our dbt projects every source flows through exactly one model of the following form:</p>
+<pre><code>with source as (
+    
+    select * from {{ source(&#39;fivetran_prd&#39;, &#39;event&#39;) }}
+    
+),
 
+renamed as (
+    
+    select
+         eventid::integer as eventid,
+        customerid::integer as customerid,
+        customerpublisheridnid::integer as customerpublisheridnid,
+        eventtype::varchar as eventtype,
+        ...
+    
+    from source
 
+)
 
-<h1 class="title toc-ignore">Journal</h1>
+select * from renamed</code></pre>
+<p>We still refer to this a base transformation. If your source data is in good shape, this transformation may be all that’s required to build a staging model, and our staging model is this SQL.</p>
+<p>However, building a staging model may warrant several models’ worth of cleaning, correcting, and categorizing, or may require a join or union to another source. To ensure our data source flows through a base transformation, we extend our DAG upstream of the staging model, by creating a separate base model, that we then select from.</p>
+<p>In our dbt projects, we place these base models in a nested <code>base</code> subdirectory.</p>
+<pre><code>├── dbt_project.yml
+└── models
+    ├── marts
+    └── staging
+        └── fivetran_prd
+            ├── base
+            |   ├── base.yml
+            |   ├── base_fivetran_prd__failed_event.sql
+            |   └── base_fivetran_prd__successful_event.sql
+            ├── src_fivetran_prd.yml
+            ├── stg_fivetran_prd.yml
+            ├── stg_fivetran_prd__customer.sql
+            └── stg_fivetran_prd__event.sql</code></pre>
+<p>In our projects, base models:</p>
+<ul>
+<li><p>Often use the ephemeral materialization, so they are not exposed to end users querying our warehouse.</p></li>
+<li><p>Are tested in a <code>base.yml</code> file within the same directory as the base models.</p></li>
+</ul>
+<p>If we need additional transformations between base and staging models, we create a nested <code>staging/&lt;source&gt;/intermediate</code> directory and place these transformations in there.</p>
+</div>
+<div id="marts" class="section level2">
+<h2>Marts</h2>
+<p>Marts are stores of models that describe business entities and processes. They are often grouped by business unit: marketing, finance, product. Models that are shared across an entire business are grouped in a core directory.</p>
+<pre><code>├── dbt_project.yml
+└── models
+    ├── marts
+    |   ├── core
+    |   ├── finance
+    |   ├── marketing
+    |   └── product
+    └── staging</code></pre>
+<p>There are entire books written on how to design models, which is beyond the scope of this article. In our view of the world, our goal is to build fact and dimension models, that are abstracted from the source data that they rely upon:</p>
+<ul>
+<li><p><code>fct_&lt;verb&gt;</code><strong>:</strong> A tall, narrow table representing real-world processes that have occurred or are occurring. The heart of these models is usually an immutable event stream: sessions, transactions, event, stories, votes.</p></li>
+<li><p><code>dim_&lt;noun&gt;</code>: A wide, short table where each row is a person, place, or thing; the ultimate source of truth when identifying and describing entities of the organization. They are mutable, though slowly changing: customer, products, candidates, buildings, employees.</p></li>
+</ul>
+<p>Where the work of staging models is limited to cleaning and preparing, fact tables are the product of substantive data transformation: choosing (and reducing) dimensions, date-spining, executing business logic, and making informed, confident decisions.</p>
+<p>This layer of modeling is considerably more complex than creating staging models, and the models we <em>design</em> are highly tailored to the analytical needs of an organization. As such, we have far less convention when it comes to these models. Some patterns we’ve found to be useful are:</p>
+<ul>
+<li><p><code>fct_</code> and <code>dim_</code> models should be materialized as tables within a warehouse to improve query performance. As a default, we use the table materialization, and where performance requires it, we use the incremental materialization.</p></li>
+<li><p>Intermediate transformations required to get to a fact or dimension model are placed in a nested <code>marts/&lt;mart&gt;/intermediate</code> directory. They are named <code>&lt;useful_name&gt;__&lt;transformation_in_past_tense&gt;.sql</code>. The lack of prefix and use of double underscores indicates that these are intermediate models, not to be trusted, however, it may also be worth hiding these in a different <a href="https://docs.getdbt.com/docs/using-custom-schemas">schema 386</a>.</p></li>
+<li><p>Models are tested and documented in a <code>&lt;dir_name&gt;.yml</code> file in the same directory as the models.</p></li>
+<li><p>Any extra documentation in a <a href="https://docs.getdbt.com/reference#doc">docs block 139</a> is placed in a <code>&lt;dir_name&gt;.md</code> file in the same directory.</p></li>
+</ul>
+<p>A marts directory may therefore end up looking like:</p>
+<pre><code>├── dbt_project.yml
+└── models
+    ├── marts
+    │   ├── core
+    │   │   ├── core.md
+    │   │   ├── core.yml
+    │   │   ├── dim_customer.sql
+    │   │   ├── fct_event.sql
+    │   │   └── intermediate
+    │   │       ├── customer_event__grouped.sql
+    │   │       ├── intermediate.yml
+    │   │       └── event_eventtype__joined.sql
+    │   ├── finance
+    │   ├── marketing
+    │   └── product
+    └── staging</code></pre>
+</div>
+</div>
+<div id="model-configuration" class="section level1">
+<h1>Model configuration</h1>
+<ul>
+<li>Model-specific attributes (like sort/dist keys) should be specified in the model.</li>
+<li>If a particular configuration applies to all models in a directory, it should be specified in the <code>dbt_project.yml</code> file.</li>
+<li>In-model configurations should be specified like this:</li>
+</ul>
+<pre class="python"><code>{{
+  config(
+    materialized = &#39;table&#39;,
+    sort = &#39;id&#39;,
+    dist = &#39;id&#39;
+  )
+}}</code></pre>
+<ul>
+<li>Marts should always be configured as tables</li>
+</ul>
+<div id="dbt-conventions" class="section level2">
+<h2>dbt conventions</h2>
+<ul>
+<li>Only <code>stg_</code> models (or <code>base_</code> models if your project requires them) should select from <code>sources</code>.</li>
+<li>All other models should only select from other models.</li>
+</ul>
+</div>
+<div id="testing" class="section level2">
+<h2>Testing</h2>
+<ul>
+<li>Every subdirectory should contain a <code>.yml</code> file, in which each model in the subdirectory is tested. For staging folders, the naming structure should be <code>src_sourcename.yml</code>. For other folders, the structure should be <code>foldername.yml</code> (example <code>core.yml</code>).</li>
+<li>At a minimum, unique and not_null tests should be applied to the primary key of each model.</li>
+</ul>
+</div>
+</div>
+<div id="naming-and-field-conventions" class="section level1">
+<h1>Naming and field conventions</h1>
+<ul>
+<li>Schema, table and column names should be in <code>snake_case</code>.</li>
+<li>Use names based on the <em>business</em> terminology, rather than the source terminology.</li>
+<li>Each model should have a primary key.</li>
+<li>The primary key of a model should be named <code>&lt;object&gt;_id</code>, e.g. <code>account_id</code> – this makes it easier to know what <code>id</code> is being referenced in downstream joined models.</li>
+<li>For base/staging models, fields should be ordered in categories, where identifiers are first and timestamps are at the end.</li>
+<li>Timestamp columns should be named <code>&lt;event&gt;_at</code>, e.g. <code>created_at</code>, and should be in UTC. If a different timezone is being used, this should be indicated with a suffix, e.g <code>created_at_pt</code>.</li>
+<li>Booleans should be prefixed with <code>is_</code> or <code>has_</code>.</li>
+<li>Price/revenue fields should be in decimal currency (e.g. <code>19.99</code> for $19.99; many app databases store prices as integers in cents). If non-decimal currency is used, indicate this with suffix, e.g. <code>price_in_cents</code>.</li>
+<li>Avoid reserved words as column names</li>
+<li>Consistency is key! Use the same field names across models where possible, e.g. a key to the <code>customer</code> table should be named <code>customer_id</code> rather than <code>user_id</code>.</li>
+</ul>
+<div id="ctes" class="section level2">
+<h2>CTEs</h2>
+<p>For more information about why we use so many CTEs, check out <a href="https://discourse.getdbt.com/t/why-the-fishtown-sql-style-guide-uses-so-many-ctes/1091">this discourse post</a>.</p>
+<ul>
+<li>All <code>{{ ref('...') }}</code> statements should be placed in CTEs at the top of the file</li>
+<li>Where performance permits, CTEs should perform a single, logical unit of work.</li>
+<li>CTE names should be as verbose as needed to convey what they do</li>
+<li>CTEs with confusing or noteable logic should be commented</li>
+<li>CTEs that are duplicated across models should be pulled out into their own models</li>
+<li>create a <code>final</code> or similar CTE that you select from as your last line of code. This makes it easier to debug code within a model (without having to comment out code!)</li>
+<li>CTEs should be formatted like this:</li>
+</ul>
+<pre class="sql"><code>with
 
+events as (
+
+    ...
+
+),
+
+-- CTE comments go here
+filtered_events as (
+
+    ...
+
+)
+
+select * from filtered_events</code></pre>
+</div>
+<div id="sql-style-guide" class="section level2">
+<h2>SQL style guide</h2>
+<ul>
+<li><p>Use trailing commas</p></li>
+<li><p>Indents should be four spaces (except for predicates, which should line up with the <code>where</code> keyword)</p></li>
+<li><p>Lines of SQL should be no longer than 80 characters</p></li>
+<li><p>Field names and function names should all be lowercase</p></li>
+<li><p>The <code>as</code> keyword should be used when aliasing a field or table</p></li>
+<li><p>Fields should be stated before aggregates / window functions</p></li>
+<li><p>Aggregations should be executed as early as possible before joining to another table.</p></li>
+<li><p>Ordering and grouping by a number (eg. group by 1, 2) is preferred over listing the column names (see <a href="https://blog.getdbt.com/write-better-sql-a-defense-of-group-by-1/">this rant</a> for why). Note that if you are grouping by more than a few columns, it may be worth revisiting your model design.</p></li>
+<li><p>Specify join keys - do not use <code>using</code>. Certain warehouses have inconsistencies in <code>using</code> results (specifically Snowflake).</p></li>
+<li><p>Prefer <code>union all</code> to <code>union</code> <a href="http://docs.aws.amazon.com/redshift/latest/dg/c_example_unionall_query.html">*</a></p></li>
+<li><p>Avoid table aliases in join conditions (especially initialisms) – it’s harder to understand what the table called “c” is compared to “customer”.</p></li>
+<li><p>If joining two or more tables, <em>always</em> prefix your column names with the table alias. If only selecting from one table, prefixes are not needed.</p></li>
+<li><p>Be explicit about your join (i.e. write <code>inner join</code> instead of <code>join</code>). <code>left joins</code> are normally the most useful, <code>right joins</code> often indicate that you should change which table you select <code>from</code> and which one you <code>join</code> to.</p></li>
+<li><p><em>DO NOT OPTIMIZE FOR A SMALLER NUMBER OF LINES OF CODE. NEWLINES ARE CHEAP, BRAIN TIME IS EXPENSIVE</em></p></li>
+</ul>
+<div id="example-sql" class="section level3">
+<h3>Example SQL</h3>
+<pre class="sql"><code>with
+
+my_data as (
+
+    select * from {{ ref(&#39;my_data&#39;) }}
+
+),
+
+some_cte as (
+
+    select * from {{ ref(&#39;some_cte&#39;) }}
+
+),
+
+some_cte_agg as (
+
+    select
+        id,
+        sum(field_4) as total_field_4,
+        max(field_5) as max_field_5
+
+    from some_cte
+    group by 1
+
+),
+
+final as (
+
+    select [distinct]
+        my_data.field_1,
+        my_data.field_2,
+        my_data.field_3,
+
+        -- use line breaks to visually separate calculations into blocks
+        case
+            when my_data.cancellation_date is null
+                and my_data.expiration_date is not null
+                then expiration_date
+            when my_data.cancellation_date is null
+                then my_data.start_date + 7
+            else my_data.cancellation_date
+        end as cancellation_date,
+
+        some_cte_agg.total_field_4,
+        some_cte_agg.max_field_5
+
+    from my_data
+    left join some_cte_agg  
+        on my_data.id = some_cte_agg.id
+    where my_data.field_1 = &#39;abc&#39;
+        and (
+            my_data.field_2 = &#39;def&#39; or
+            my_data.field_2 = &#39;ghi&#39;
+        )
+    having count(*) &gt; 1
+
+)
+
+select * from final</code></pre>
+<ul>
+<li>Your join should list the “left” table first (i.e. the table you are selecting <code>from</code>):</li>
+</ul>
+<pre class="sql"><code>select
+    trips.*,
+    drivers.rating as driver_rating,
+    riders.rating as rider_rating
+
+from trips
+left join users as drivers
+    on trips.driver_id = drivers.user_id
+left join users as riders
+    on trips.rider_id = riders.user_id</code></pre>
+</div>
+</div>
+<div id="yaml-style-guide" class="section level2">
+<h2>YAML style guide</h2>
+<ul>
+<li>Indents should be two spaces</li>
+<li>List items should be indented</li>
+<li>Use a new line to separate list items that are dictionaries where appropriate</li>
+<li>Lines of YAML should be no longer than 80 characters.</li>
+</ul>
+<div id="example-yaml" class="section level3">
+<h3>Example YAML</h3>
+<pre class="yaml"><code>version: 2
+
+models:
+  - name: events
+    columns:
+      - name: event_id
+        description: This is a unique identifier for the event
+        tests:
+          - unique
+          - not_null
+
+      - name: event_time
+        description: &quot;When the event occurred in UTC (eg. 2021-01-01 12:00:00)&quot;
+        tests:
+          - not_null
+
+      - name: user_id
+        description: The ID of the user who recorded the event
+        tests:
+          - not_null
+          - relationships:
+              to: ref(&#39;users&#39;)
+              field: id</code></pre>
+</div>
+</div>
+<div id="jinja-style-guide" class="section level2">
+<h2>Jinja style guide</h2>
+<ul>
+<li>When using Jinja delimiters, use spaces on the inside of your delimiter, like <code>{{ this }}</code> instead of <code>{{this}}</code></li>
+<li>Use newlines to visually indicate logical blocks of Jinja</li>
+</ul>
+</div>
+</div>
+<div id="operators" class="section level1">
+<h1>Operators</h1>
+</div>
 </div>
 
+   
+   
+              </div>
+  </div>
+  </div>
+  </div>
+   
+      
 
-<p>IMPORTANT: You can delete everything in here and start fresh. You might want to start by not deleting anything above this line until you know what that stuff is doing.</p>
-<p>This is an .Rmd file. It is plain text with special features. Any time you write just like this, it will be compiled to normal text in the website. If you put a # in front of your text, it will create a top level-header.</p>
-<div id="my-first-post" class="section level1">
-<h1>My first post</h1>
-<p>2018 | 7 | 23 Last compiled: 2019-01-28</p>
-<p>Notice that whatever you define as a top level header, automatically gets put into the table of contents bar on the left.</p>
-<div id="second-level-header" class="section level2">
-<h2>Second level header</h2>
-<p>You can add more headers by adding more hashtags. These won’t be put into the table of contents</p>
-<div id="third-level-header" class="section level3">
-<h3>third level header</h3>
-<p>Here’s an even lower level header</p>
-</div>
-</div>
-</div>
-<div id="my-second-post-note-the-order" class="section level1">
-<h1>My second post (note the order)</h1>
-<p>2018 | 7 | 23 Last compiled: 2019-01-28</p>
-<p>I’m writing this tutorial going from the top down. And, this is how it will be printed. So, notice the second post is second in the list. If you want your most recent post to be at the top, then make a new post starting at the top. If you want the oldest first, do, then keep adding to the bottom</p>
-</div>
-<div id="adding-r-stuff" class="section level1">
-<h1>Adding R stuff</h1>
-<p>So far this is just a blog where you can write in plain text and serve your writing to a webpage. One of the main purposes of this lab journal is to record your progress learning R. The reason I am asking you to use this process is because you can both make a website, and a lab journal, and learn R all in R-studio. This makes everything really convenient and in the sam place.</p>
-<p>So, let’s say you are learning how to make a histogram in R. For example, maybe you want to sample 100 numbers from a normal distribution with mean = 0, and standard deviation =1, and then you want to plot a histogram. You can do this right here by using an r code block, like this:</p>
-<pre class="r"><code>samples &lt;- rnorm(100, mean=0, sd=1)
-hist(samples)</code></pre>
-<p><img src="Journal_files/figure-html/unnamed-chunk-1-1.png" width="672" /></p>
-<p>When you knit this R Markdown document, you will see that the histogram is printed to the page, along with the R code. This document can be set up to hide the R code in the webpage, just delete the comment (hashtag), from the cold folding option in the yaml header up top. For purposes of letting yourself see the code, and me see the code, best to keep it the way that it is. You learn all of these things and more can be customized in each R code block.</p>
-</div>
-<div id="the-big-idea" class="section level1">
-<h1>The big idea</h1>
-<p>Use this lab journal to record what you do in R. This way I will be able to see what you are doing and help you along the way. You will also be creating a repository of all the things you do. You can make posts about everything. Learning specific things in R (project unrelated), and doing things for the project that we will discuss at the beginning of the Fall semester. You can get started now by fiddling around with googling things, and trying stuff out in R. I’ve placed some helpful starting links in the links page on this website</p>
-</div>
-<div id="what-can-you-do-right-now-by-yourself" class="section level1">
-<h1>What can you do right now by yourself?</h1>
-<p>It’s hard to learn programming when you don’t have specific problems that you are trying to solve. Everything just seems abstract.</p>
-<p>I wrote an <a href="https://crumplab.github.io/programmingforpsych/">introductory programming book that introduces R</a>, and gives some <a href="https://crumplab.github.io/programmingforpsych/programming-challenges-i-learning-the-fundamentals.html">concrete problems for you to solve</a>.</p>
-<p>To get the hang of journaling and solving the problems to learn programming, my suggestion is that you use this .Rmd file to solve the problems. It would look like this:</p>
-</div>
-<div id="problem-1" class="section level1">
-<h1>Problem 1</h1>
-<p>Do simple math with numbers, addition, subtraction, multiplication, division</p>
-<pre class="r"><code>1+2</code></pre>
-<pre><code>## [1] 3</code></pre>
-<pre class="r"><code>2*5</code></pre>
-<pre><code>## [1] 10</code></pre>
-<pre class="r"><code>5/3</code></pre>
-<pre><code>## [1] 1.666667</code></pre>
-<pre class="r"><code>(1+6+4)/5</code></pre>
-<pre><code>## [1] 2.2</code></pre>
-</div>
-<div id="problem-2" class="section level1">
-<h1>Problem 2</h1>
-<p>Put numbers into variables, do simple math on the variables</p>
-<pre class="r"><code>a&lt;-1
-b&lt;-2
-a+b</code></pre>
-<pre><code>## [1] 3</code></pre>
-<pre class="r"><code>d&lt;-c(1,2,3)
-e&lt;-c(5,6,7)
-d+e</code></pre>
-<pre><code>## [1]  6  8 10</code></pre>
-<pre class="r"><code>d*e</code></pre>
-<pre><code>## [1]  5 12 21</code></pre>
-<pre class="r"><code>d/e</code></pre>
-<pre><code>## [1] 0.2000000 0.3333333 0.4285714</code></pre>
-</div>
-<div id="problem-3" class="section level1">
-<h1>Problem 3</h1>
-<p>Write code that will place the numbers 1 to 100 separately into a variable using for loop. Then, again using the seq function.</p>
-<pre class="r"><code># for loop solution
-# i becomes the number 1 to 100 at each step of the loop
+  <script>
+    $(document).ready(function () {
 
-
-a &lt;- length(100) # make empty variable, set length to 100
-for (i in 1:100){
-  a[i] &lt;-i #assigns the number in i, to the ith index of a
-}
-
-print(a)</code></pre>
-<pre><code>##   [1]   1   2   3   4   5   6   7   8   9  10  11  12  13  14  15  16  17
-##  [18]  18  19  20  21  22  23  24  25  26  27  28  29  30  31  32  33  34
-##  [35]  35  36  37  38  39  40  41  42  43  44  45  46  47  48  49  50  51
-##  [52]  52  53  54  55  56  57  58  59  60  61  62  63  64  65  66  67  68
-##  [69]  69  70  71  72  73  74  75  76  77  78  79  80  81  82  83  84  85
-##  [86]  86  87  88  89  90  91  92  93  94  95  96  97  98  99 100</code></pre>
-<pre class="r"><code># for loop solution #2
-
-a&lt;-c() #create empty variable using combine command
-for (i in 1:100){
-  a&lt;-c(a,i) # keeps combining a with itself and the new number in i
-}
-print(a)</code></pre>
-<pre><code>##   [1]   1   2   3   4   5   6   7   8   9  10  11  12  13  14  15  16  17
-##  [18]  18  19  20  21  22  23  24  25  26  27  28  29  30  31  32  33  34
-##  [35]  35  36  37  38  39  40  41  42  43  44  45  46  47  48  49  50  51
-##  [52]  52  53  54  55  56  57  58  59  60  61  62  63  64  65  66  67  68
-##  [69]  69  70  71  72  73  74  75  76  77  78  79  80  81  82  83  84  85
-##  [86]  86  87  88  89  90  91  92  93  94  95  96  97  98  99 100</code></pre>
-<pre class="r"><code># seq solution
-a &lt;- seq(1,100,1) # look up help for seq using ?seq() in console
-print(a)</code></pre>
-<pre><code>##   [1]   1   2   3   4   5   6   7   8   9  10  11  12  13  14  15  16  17
-##  [18]  18  19  20  21  22  23  24  25  26  27  28  29  30  31  32  33  34
-##  [35]  35  36  37  38  39  40  41  42  43  44  45  46  47  48  49  50  51
-##  [52]  52  53  54  55  56  57  58  59  60  61  62  63  64  65  66  67  68
-##  [69]  69  70  71  72  73  74  75  76  77  78  79  80  81  82  83  84  85
-##  [86]  86  87  88  89  90  91  92  93  94  95  96  97  98  99 100</code></pre>
-</div>
-<div id="replace-this-with-problem-4" class="section level1">
-<h1>Replace this with problem 4</h1>
-<p>And keep going. Try to solve the problems with different scripts that provide the same solution. Good luck, Happy coding.</p>
-</div>
+		// add bootstrap table styles to pandoc tables
+	$('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+		
+ 	 	$('#content img').addClass("image-thumb");
+		
+		$('#content img:not(.no-lightbox)').addClass("image-lb");
+	$('#content').magnificPopup({
+	    type:'image',
+	    closeOnContentClick: false,
+	    closeBtnInside: false,
+	    delegate: '.image-lb',
+	    gallery: {enabled: false },
+	    image: {
+	        verticalFit: true,
+		titleSrc: 'alt'
+	    }
+ 	});
+ 	    });
+  </script>
 
 
 
-</div>
-</div>
-
-</div>
-
-<script>
-
-// add bootstrap table styles to pandoc tables
-function bootstrapStylePandocTables() {
-  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
-}
-$(document).ready(function () {
-  bootstrapStylePandocTables();
-});
-
-
-</script>
-
-<!-- dynamically load mathjax for compatibility with self-contained -->
-<script>
-  (function () {
-    var script = document.createElement("script");
-    script.type = "text/javascript";
-    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
-    document.getElementsByTagName("head")[0].appendChild(script);
-  })();
-</script>
-
+    <!-- dynamically load mathjax for compatibility with self-contained -->
+  <script>
+    (function () {
+	var script = document.createElement("script");
+	script.type = "text/javascript";
+	script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+	document.getElementsByTagName("head")[0].appendChild(script);
+    })();
+  </script>
+  
 </body>
 </html>

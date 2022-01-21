@@ -1,128 +1,445 @@
 ---
-title: "Journal"
+title: "DBT Reference Guide"
+author: "Ahmed Yassine"
+date: "Last compiled on `r format(Sys.time(), '%d %B, %Y')`"
+favicon: "favicon.ico"
 output:
-  html_document:
-    toc: true
-    toc_float: true
-    collapsed: false
-    number_sections: false
-    toc_depth: 1
-    #code_folding: hide
+  rmdformats::downcute:
+    self_contained: true
+    toc_depth: 2
+    thumbnails: true
+    lightbox: true
+    gallery: false
+    highlight: tango
 ---
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(message=FALSE,warning=FALSE, cache=TRUE)
+```{r, setup, include=FALSE}
+knitr::opts_chunk$set(
+warning=FALSE,
+message=FALSE,
+include = TRUE,
+echo = FALSE
+)
 ```
 
-IMPORTANT: You can delete everything in here and start fresh. You might want to start by not deleting anything above this line until you know what that stuff is doing.
+# Overview
 
+Our models (typically) fit into three main categories: staging, marts, base/intermediate. For more detail about why we use this structure, check out [this discourse post](https://discourse.getdbt.com/t/how-we-structure-our-dbt-projects/355). The file and naming structures are as follows:
 
-This is an .Rmd file. It is plain text with special features. Any time you write just like this, it will be compiled to normal text in the website. If you put a \# in front of your text, it will create a top level-header.
+1.  **Sources**: Schemas and tables in a source-conformed structure (i.e. tables and columns in a structure based on what an API returns), loaded by a third party tool.
 
-# My first post
+2.  **Staging models**: The atomic unit of data modeling. Each model bears a one-to-one relationship with the source data table it represents. It has the same granularity, but the columns have been renamed, recast, or usefully reconsidered into a consistent format.
 
-2018 | 7 | 23 Last compiled: `r Sys.Date()`
+3.  **Marts models**: Models that represent business processes and entities, abstracted from the data sources that they are based on.
 
-Notice that whatever you define as a top level header, automatically gets put into the table of contents bar on the left. 
+<!-- -->
 
-## Second level header
+    ├── dbt_project.yml
+    └── models
+        ├── marts
+        |   └── core
+        |       ├── intermediate
+        |       |   ├── intermediate.yml
+        |       |   ├── customer__unioned.sql
+        |       |   ├── customer__grouped.sql
+        |       └── core.yml
+        |       └── core.docs
+        |       └── dim_customer.sql
+        |       └── fct_event.sql
+        └── staging
+            └── fivetran_prd
+                ├── base
+                |   ├── base__fivetran_prd_event.sql
+                ├── src_fivetran_prd.yml
+                ├── src_fivetran_prd.docs
+                ├── stg_fivetran_prd.yml
+                ├── stg_fivetran_prd__customer.sql
+                └── stg_fivetran_prd__event.sql
 
-You can add more headers by adding more hashtags. These won't be put into the table of contents
+-   All objects should be plural, such as: `stg_fivetran_prd__event`
+-   Base tables are prefixed with `base__`, such as: `base__<source>_<object>`
+-   Intermediate tables should end with a past tense verb indicating the action performed on the object, such as: `customer__unioned`
+-   Marts are categorized between fact (immutable, verbs) and dimensions (mutable, nouns) with a prefix that indicates either, such as: `fct_event` or `dim_customer`
 
-### third level header
+## Staging
 
-Here's an even lower level header
+-   Fields have been renamed and recast in a consistent way.
 
-# My second post (note the order)
+-   Datatypes, such as timezones, are consistent.
 
-2018 | 7 | 23 Last compiled: `r Sys.Date()`
+-   Light cleansing, such as replacing empty string with NULL values, has occurred.
 
-I'm writing this tutorial going from the top down. And, this is how it will be printed. So, notice the second post is second in the list. If you want your most recent post to be at the top, then make a new post starting at the top. If you want the oldest first, do, then keep adding to the bottom
+-   If useful, flattening of objects might have occurred.
 
-# Adding R stuff
+-   There is a primary key that is both unique and not null (and tested).
 
-So far this is just a blog where you can write in plain text and serve your writing to a webpage. One of the main purposes of this lab journal is to record your progress learning R. The reason I am asking you to use this process is because you can both make a website, and a lab journal, and learn R all in R-studio. This makes everything really convenient and in the sam place. 
+Staging models can have joins in them to field additional columns for context or enrichment; add rows through unions and remove them through filters; deduplicate a natural key or hash together a [surrogate one 254](https://github.com/fishtown-analytics/dbt-utils#surrogate_key-source).
 
-So, let's say you are learning how to make a histogram in R. For example, maybe you want to sample 100 numbers from a normal distribution with mean = 0, and standard deviation =1, and then you want to plot a histogram. You can do this right here by using an r code block, like this:
+Because we often work with multiple data sources, in our `staging` directory, we create one directory per source.
 
-```{r}
-samples <- rnorm(100, mean=0, sd=1)
-hist(samples)
+    ├── dbt_project.yml
+    └── models
+        ├── marts
+        └── staging
+            ├── fivetran_prd
+            └── hubspot_production
+
+Each staging directory contains at a minimum:
+
+-   One staging model for each object that is useful for analytics:
+
+    -   Named `stg_<source>__<object>`.
+
+    -   Generally materialized as a view (unless performance requires it as a table).
+
+-   A `src_<source>.yml` file which contains:
+
+    -   [Source 840](https://docs.getdbt.com/docs/using-sources) definitions, tests, and documentation
+
+-   A `stg_<source>.yml` file which contains
+
+    -   [Tests and documentation 405](https://docs.getdbt.com/docs/testing-and-documentation) for models in the same directory
+
+<!-- -->
+
+    ├── dbt_project.yml
+    └── models
+        ├── marts
+        └── staging
+            └── fivetran_prd
+                ├── src_fivetran_prd.yml
+                ├── stg_fivetran_prd.yml
+                ├── stg_fivetran_prd__customer.sql
+                └── stg_fivetran_prd__event.sql
+                
+        
+
+## Base
+
+Earlier versions of the dbt documentation recommended implementing "base models" as the first layer of transformation -- and we used to organize and name our models in this way, for example `models/fivetran_prd/base/base_event.sql`.
+
+We realized that while the reasons behind this convention were valid, the naming was an opinion, so in our recent update to the [best practices 2.3k](https://docs.getdbt.com/docs/best-practices), we took the mention of base models out. Instead, we replaced it with the principles of "renaming and recasting once" and "limiting the dependencies on raw data".
+
+That being said, in our dbt projects every source flows through exactly one model of the following form:
+
+    with source as (
+        
+        select * from {{ source('fivetran_prd', 'event') }}
+        
+    ),
+
+    renamed as (
+        
+        select
+             eventid::integer as eventid,
+            customerid::integer as customerid,
+            customerpublisheridnid::integer as customerpublisheridnid,
+            eventtype::varchar as eventtype,
+            ...
+        
+        from source
+
+    )
+
+    select * from renamed
+
+We still refer to this a base transformation. If your source data is in good shape, this transformation may be all that's required to build a staging model, and our staging model is this SQL.
+
+However, building a staging model may warrant several models' worth of cleaning, correcting, and categorizing, or may require a join or union to another source. To ensure our data source flows through a base transformation, we extend our DAG upstream of the staging model, by creating a separate base model, that we then select from.
+
+In our dbt projects, we place these base models in a nested `base` subdirectory.
+
+    ├── dbt_project.yml
+    └── models
+        ├── marts
+        └── staging
+            └── fivetran_prd
+                ├── base
+                |   ├── base.yml
+                |   ├── base_fivetran_prd__failed_event.sql
+                |   └── base_fivetran_prd__successful_event.sql
+                ├── src_fivetran_prd.yml
+                ├── stg_fivetran_prd.yml
+                ├── stg_fivetran_prd__customer.sql
+                └── stg_fivetran_prd__event.sql
+
+In our projects, base models:
+
+-   Often use the ephemeral materialization, so they are not exposed to end users querying our warehouse.
+
+-   Are tested in a `base.yml` file within the same directory as the base models.
+
+If we need additional transformations between base and staging models, we create a nested `staging/<source>/intermediate` directory and place these transformations in there.
+
+## Marts
+
+Marts are stores of models that describe business entities and processes. They are often grouped by business unit: marketing, finance, product. Models that are shared across an entire business are grouped in a core directory.
+
+    ├── dbt_project.yml
+    └── models
+        ├── marts
+        |   ├── core
+        |   ├── finance
+        |   ├── marketing
+        |   └── product
+        └── staging
+
+There are entire books written on how to design models, which is beyond the scope of this article. In our view of the world, our goal is to build fact and dimension models, that are abstracted from the source data that they rely upon:
+
+-   `fct_<verb>`**:** A tall, narrow table representing real-world processes that have occurred or are occurring. The heart of these models is usually an immutable event stream: sessions, transactions, event, stories, votes.
+
+-   `dim_<noun>`: A wide, short table where each row is a person, place, or thing; the ultimate source of truth when identifying and describing entities of the organization. They are mutable, though slowly changing: customer, products, candidates, buildings, employees.
+
+Where the work of staging models is limited to cleaning and preparing, fact tables are the product of substantive data transformation: choosing (and reducing) dimensions, date-spining, executing business logic, and making informed, confident decisions.
+
+This layer of modeling is considerably more complex than creating staging models, and the models we *design* are highly tailored to the analytical needs of an organization. As such, we have far less convention when it comes to these models. Some patterns we've found to be useful are:
+
+-   `fct_` and `dim_` models should be materialized as tables within a warehouse to improve query performance. As a default, we use the table materialization, and where performance requires it, we use the incremental materialization.
+
+-   Intermediate transformations required to get to a fact or dimension model are placed in a nested `marts/<mart>/intermediate` directory. They are named `<useful_name>__<transformation_in_past_tense>.sql`. The lack of prefix and use of double underscores indicates that these are intermediate models, not to be trusted, however, it may also be worth hiding these in a different [schema 386](https://docs.getdbt.com/docs/using-custom-schemas).
+
+-   Models are tested and documented in a `<dir_name>.yml` file in the same directory as the models.
+
+-   Any extra documentation in a [docs block 139](https://docs.getdbt.com/reference#doc) is placed in a `<dir_name>.md` file in the same directory.
+
+A marts directory may therefore end up looking like:
+
+    ├── dbt_project.yml
+    └── models
+        ├── marts
+        │   ├── core
+        │   │   ├── core.md
+        │   │   ├── core.yml
+        │   │   ├── dim_customer.sql
+        │   │   ├── fct_event.sql
+        │   │   └── intermediate
+        │   │       ├── customer_event__grouped.sql
+        │   │       ├── intermediate.yml
+        │   │       └── event_eventtype__joined.sql
+        │   ├── finance
+        │   ├── marketing
+        │   └── product
+        └── staging
+
+# Model configuration
+
+-   Model-specific attributes (like sort/dist keys) should be specified in the model.
+-   If a particular configuration applies to all models in a directory, it should be specified in the `dbt_project.yml` file.
+-   In-model configurations should be specified like this:
+
+``` {.python}
+{{
+  config(
+    materialized = 'table',
+    sort = 'id',
+    dist = 'id'
+  )
+}}
 ```
 
-When you knit this R Markdown document, you will see that the histogram is printed to the page, along with the R code. This document can be set up to hide the R code in the webpage, just delete the comment (hashtag), from the cold folding option in the yaml header up top. For purposes of letting yourself see the code, and me see the code, best to keep it the way that it is. You learn all of these things and more can be customized in each R code block.
+-   Marts should always be configured as tables
 
-# The big idea
+## dbt conventions
 
-Use this lab journal to record what you do in R. This way I will be able to see what you are doing and help you along the way. You will also be creating a repository of all the things you do. You can make posts about everything. Learning specific things in R (project unrelated), and doing things for the project that we will discuss at the beginning of the Fall semester. You can get started now by fiddling around with googling things, and trying stuff out in R. I've placed some helpful starting links in the links page on this website
+-   Only `stg_` models (or `base_` models if your project requires them) should select from `sources`.
+-   All other models should only select from other models.
 
-# What can you do right now by yourself?
+## Testing
 
-It's hard to learn programming when you don't have specific problems that you are trying to solve. Everything just seems abstract.
+-   Every subdirectory should contain a `.yml` file, in which each model in the subdirectory is tested. For staging folders, the naming structure should be `src_sourcename.yml`. For other folders, the structure should be `foldername.yml` (example `core.yml`).
+-   At a minimum, unique and not_null tests should be applied to the primary key of each model.
 
-I wrote an [introductory programming book that introduces R](https://crumplab.github.io/programmingforpsych/), and gives some [concrete problems for you to solve](https://crumplab.github.io/programmingforpsych/programming-challenges-i-learning-the-fundamentals.html). 
+# Naming and field conventions
 
-To get the hang of journaling and solving the problems to learn programming, my suggestion is that you use this .Rmd file to solve the problems. It would look like this:
+-   Schema, table and column names should be in `snake_case`.
+-   Use names based on the *business* terminology, rather than the source terminology.
+-   Each model should have a primary key.
+-   The primary key of a model should be named `<object>_id`, e.g. `account_id` -- this makes it easier to know what `id` is being referenced in downstream joined models.
+-   For base/staging models, fields should be ordered in categories, where identifiers are first and timestamps are at the end.
+-   Timestamp columns should be named `<event>_at`, e.g. `created_at`, and should be in UTC. If a different timezone is being used, this should be indicated with a suffix, e.g `created_at_pt`.
+-   Booleans should be prefixed with `is_` or `has_`.
+-   Price/revenue fields should be in decimal currency (e.g. `19.99` for \$19.99; many app databases store prices as integers in cents). If non-decimal currency is used, indicate this with suffix, e.g. `price_in_cents`.
+-   Avoid reserved words as column names
+-   Consistency is key! Use the same field names across models where possible, e.g. a key to the `customer` table should be named `customer_id` rather than `user_id`.
 
-# Problem 1
+## CTEs
 
-Do simple math with numbers, addition, subtraction, multiplication, division
+For more information about why we use so many CTEs, check out [this discourse post](https://discourse.getdbt.com/t/why-the-fishtown-sql-style-guide-uses-so-many-ctes/1091).
 
-```{r}
-1+2
-2*5
-5/3
-(1+6+4)/5
+-   All `{{ ref('...') }}` statements should be placed in CTEs at the top of the file
+-   Where performance permits, CTEs should perform a single, logical unit of work.
+-   CTE names should be as verbose as needed to convey what they do
+-   CTEs with confusing or noteable logic should be commented
+-   CTEs that are duplicated across models should be pulled out into their own models
+-   create a `final` or similar CTE that you select from as your last line of code. This makes it easier to debug code within a model (without having to comment out code!)
+-   CTEs should be formatted like this:
 
+``` {.sql}
+with
+
+events as (
+
+    ...
+
+),
+
+-- CTE comments go here
+filtered_events as (
+
+    ...
+
+)
+
+select * from filtered_events
 ```
 
-# Problem 2
+## SQL style guide
 
-Put numbers into variables, do simple math on the variables
+-   Use trailing commas
 
-```{r}
-a<-1
-b<-2
-a+b
+-   Indents should be four spaces (except for predicates, which should line up with the `where` keyword)
 
-d<-c(1,2,3)
-e<-c(5,6,7)
-d+e
-d*e
-d/e
+-   Lines of SQL should be no longer than 80 characters
 
+-   Field names and function names should all be lowercase
+
+-   The `as` keyword should be used when aliasing a field or table
+
+-   Fields should be stated before aggregates / window functions
+
+-   Aggregations should be executed as early as possible before joining to another table.
+
+-   Ordering and grouping by a number (eg. group by 1, 2) is preferred over listing the column names (see [this rant](https://blog.getdbt.com/write-better-sql-a-defense-of-group-by-1/) for why). Note that if you are grouping by more than a few columns, it may be worth revisiting your model design.
+
+-   Specify join keys - do not use `using`. Certain warehouses have inconsistencies in `using` results (specifically Snowflake).
+
+-   Prefer `union all` to `union` [\*](http://docs.aws.amazon.com/redshift/latest/dg/c_example_unionall_query.html)
+
+-   Avoid table aliases in join conditions (especially initialisms) -- it's harder to understand what the table called "c" is compared to "customer".
+
+-   If joining two or more tables, *always* prefix your column names with the table alias. If only selecting from one table, prefixes are not needed.
+
+-   Be explicit about your join (i.e. write `inner join` instead of `join`). `left joins` are normally the most useful, `right joins` often indicate that you should change which table you select `from` and which one you `join` to.
+
+-   *DO NOT OPTIMIZE FOR A SMALLER NUMBER OF LINES OF CODE. NEWLINES ARE CHEAP, BRAIN TIME IS EXPENSIVE*
+
+### Example SQL
+
+``` {.sql}
+with
+
+my_data as (
+
+    select * from {{ ref('my_data') }}
+
+),
+
+some_cte as (
+
+    select * from {{ ref('some_cte') }}
+
+),
+
+some_cte_agg as (
+
+    select
+        id,
+        sum(field_4) as total_field_4,
+        max(field_5) as max_field_5
+
+    from some_cte
+    group by 1
+
+),
+
+final as (
+
+    select [distinct]
+        my_data.field_1,
+        my_data.field_2,
+        my_data.field_3,
+
+        -- use line breaks to visually separate calculations into blocks
+        case
+            when my_data.cancellation_date is null
+                and my_data.expiration_date is not null
+                then expiration_date
+            when my_data.cancellation_date is null
+                then my_data.start_date + 7
+            else my_data.cancellation_date
+        end as cancellation_date,
+
+        some_cte_agg.total_field_4,
+        some_cte_agg.max_field_5
+
+    from my_data
+    left join some_cte_agg  
+        on my_data.id = some_cte_agg.id
+    where my_data.field_1 = 'abc'
+        and (
+            my_data.field_2 = 'def' or
+            my_data.field_2 = 'ghi'
+        )
+    having count(*) > 1
+
+)
+
+select * from final
 ```
 
-# Problem 3
+-   Your join should list the "left" table first (i.e. the table you are selecting `from`):
 
-Write code that will place the numbers 1 to 100 separately into a variable using for loop. Then, again using the seq function.
+``` {.sql}
+select
+    trips.*,
+    drivers.rating as driver_rating,
+    riders.rating as rider_rating
 
-```{r}
-# for loop solution
-# i becomes the number 1 to 100 at each step of the loop
-
-
-a <- length(100) # make empty variable, set length to 100
-for (i in 1:100){
-  a[i] <-i #assigns the number in i, to the ith index of a
-}
-
-print(a)
-
-# for loop solution #2
-
-a<-c() #create empty variable using combine command
-for (i in 1:100){
-  a<-c(a,i) # keeps combining a with itself and the new number in i
-}
-print(a)
-
-# seq solution
-a <- seq(1,100,1) # look up help for seq using ?seq() in console
-print(a)
-
+from trips
+left join users as drivers
+    on trips.driver_id = drivers.user_id
+left join users as riders
+    on trips.rider_id = riders.user_id
 ```
 
-# Replace this with problem 4
+## YAML style guide
 
-And keep going. Try to solve the problems with different scripts that provide the same solution. Good luck, Happy coding.
+-   Indents should be two spaces
+-   List items should be indented
+-   Use a new line to separate list items that are dictionaries where appropriate
+-   Lines of YAML should be no longer than 80 characters.
+
+### Example YAML
+
+``` {.yaml}
+version: 2
+
+models:
+  - name: events
+    columns:
+      - name: event_id
+        description: This is a unique identifier for the event
+        tests:
+          - unique
+          - not_null
+
+      - name: event_time
+        description: "When the event occurred in UTC (eg. 2021-01-01 12:00:00)"
+        tests:
+          - not_null
+
+      - name: user_id
+        description: The ID of the user who recorded the event
+        tests:
+          - not_null
+          - relationships:
+              to: ref('users')
+              field: id
+```
+
+## Jinja style guide
+
+-   When using Jinja delimiters, use spaces on the inside of your delimiter, like `{{ this }}` instead of `{{this}}`
+-   Use newlines to visually indicate logical blocks of Jinja
+
+# Operators

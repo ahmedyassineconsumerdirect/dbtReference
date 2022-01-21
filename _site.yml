@@ -1,11 +1,9 @@
-name: "MyLabJournal"
+name: "DBT Reference"
 navbar:
-  title: "MyLabJournal"
+  title: "DBT Reference"
   left:
-    - text: "Home"
-      href: index.html
-    - text: "Journal"
+    - text: "WIKI"
       href: Journal.html
-    - text: "Links"
+    - text: "Rescources"
       href: Links.html
 output_dir: "docs"
