@@ -3,7 +3,7 @@ navbar:
   title: "DBT Reference"
   left:
     - text: "WIKI"
-      href: Journal.html
+      href: Wiki.html
     - text: "Rescources"
       href: Links.html
 output_dir: "docs"

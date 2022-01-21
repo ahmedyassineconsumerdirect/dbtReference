@@ -1,8 +1,4 @@
 ---
-title: "DBT Reference Guide"
-author: "Ahmed Yassine"
-date: "Last compiled on `r format(Sys.time(), '%d %B, %Y')`"
-favicon: "favicon.ico"
 output:
   rmdformats::downcute:
     self_contained: true
